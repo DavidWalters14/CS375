@@ -10,3 +10,6 @@ $(Q).o: $(Q).cpp
 
 run: all
 	./$(Q) -m MarketPrices.txt -p PriceList.txt
+
+clean: all
+	rm -rf $(Q) *.o

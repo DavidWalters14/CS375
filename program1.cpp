@@ -17,7 +17,7 @@ struct card{
   string playerName;
   int marketPrice;
   int listPrice;
-}
+};
 
 /*struct subset{
   vector<card> mysubset;
@@ -53,7 +53,7 @@ int computeProfit(vector<card> cards, int budget){
       }
       if(currentsum < budget){
         if(currentsum > maxProfit){
-          maxProfit = currentset;
+          maxProfit = currentsum;
           subset = currentset;
         }
       }
@@ -63,7 +63,7 @@ int computeProfit(vector<card> cards, int budget){
   }
 
 }
-int main(int argc, char[[]] argv){
+int main(int argc, char** argv){
   int numcards = 0;
   ifstream marketfile;
   ifstream pricefile;
@@ -81,9 +81,9 @@ int main(int argc, char[[]] argv){
   if(!marketfile.is_open()){
 		cout << "market file could not be opened" << endl;
 	}
+  vector<card> gurtiescards;
   while(!marketfile.eof() && !marketfile.fail()){
-    marketprice >> numcards;
-    vector<card> gurtiescards;
+    marketfile >> numcards;
     for(int i = 0 ; i < numcards ; i++){
       card baseballcard;
       string name;
