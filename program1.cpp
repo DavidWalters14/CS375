@@ -19,50 +19,7 @@ struct card{
   int listPrice;
 };
 
-/*struct subset{
-  vector<card> mysubset;
-  int profit;
-}*/
 
-int computeProfit(vector<card> cards, int budget){
-  int maxProfit = 0;
-  vector<card> currentset;
-  vector<card> subset;
-  int sumprofit = 0;
-  for(int i = 0 ; i < cards.size() ; i++){
-    sumprofit+=cards[i].listPrice;
-  }
-  if(sumprofit < budget || sumprofit == budget){
-    //return initial cards
-  }
-  int iter1 = 0;
-  int iter2 = 1;
-  while(iter1 < cards.size()){
-    currentset.push_back(cards[iter1]);
-    if(currentset[0].listPrice < budget){
-      if(currentset[0].marketPrice > maxProfit){
-        maxProfit = currentset[0].marketPrice;
-        subset = currentset;
-      }
-    }
-    while(iter2 < cards.size()){
-      int currentsum = 0;
-      currentset.push_back(cards[iter2]);
-      for(int i = 0 ; i < currentset.size() ; i++){
-        currentsum+=currentset[i].listPrice;
-      }
-      if(currentsum < budget){
-        if(currentsum > maxProfit){
-          maxProfit = currentsum;
-          subset = currentset;
-        }
-      }
-      iter2++;
-    }
-    iter1++;
-  }
-
-}
 int main(int argc, char** argv){
   int numcards = 0;
   ifstream marketfile;
@@ -103,18 +60,67 @@ int main(int argc, char** argv){
   int cardselling;
   int budget;
   string playerpricename;
+  int playerprice;
   while(!pricefile.eof() && !pricefile.fail()){
     pricefile >> cardselling;
+    cout << "cardselling : " << cardselling << endl;
     pricefile >> budget;
     for(int i = 0 ; i < cardselling ; i++){
       pricefile >> playerpricename;
+      pricefile >> playerprice;
+      cout << "player price name: " << playerpricename << endl;
+      cout << "player price : " << playerprice << endl;
       for(int j = 0 ; j < gurtiescards.size() ; j++){
         if(playerpricename.compare(gurtiescards[i].playerName)==0){
           int price;
           pricefile >> price;
+          cout << "this is price: " << price << endl;
           gurtiescards[i].listPrice = price;
         }
       }
     }
+  }
+  int maxProfit = 0;
+  vector<card> currentset;
+  vector<card> subset;
+  int sumprofit = 0;
+  for(int i = 0 ; i < gurtiescards.size() ; i++){
+    sumprofit+=gurtiescards[i].listPrice;
+  }
+  if(sumprofit < budget || sumprofit == budget){
+    subset = gurtiescards;
+    maxProfit = sumprofit - budget;
+  }
+  else{
+    int iter1 = 0;
+    int iter2 = 1;
+    while(iter1 < gurtiescards.size()){
+      currentset.push_back(gurtiescards[iter1]);
+      if(currentset[0].listPrice < budget){
+        if(currentset[0].marketPrice > maxProfit){
+          maxProfit = currentset[0].marketPrice;
+          subset = currentset;
+        }
+      }
+      while(iter2 < gurtiescards.size()){
+        int currentsum = 0;
+        currentset.push_back(gurtiescards[iter2]);
+        for(int i = 0 ; i < currentset.size() ; i++){
+          currentsum+=currentset[i].listPrice;
+        }
+        if(currentsum < budget){
+          if(currentsum > maxProfit){
+            maxProfit = currentsum;
+            subset = currentset;
+          }
+        }
+        iter2++;
+        }
+      iter1++;
+      }
+    }
+  for(int i = 0 ; i < subset.size() ; i++){
+    //cout << subset[i].playerName << endl;
+    //cout << maxProfit << endl;
   }
 }
