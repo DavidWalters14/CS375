@@ -16,7 +16,7 @@ using namespace std;
 struct card{
   string playerName;
   int marketPrice;
-  int listPrice;
+  int listPrice = -1;
 };
 
 
@@ -41,6 +41,7 @@ int main(int argc, char** argv){
   vector<card> gurtiescards;
   while(!marketfile.eof() && !marketfile.fail()){
     marketfile >> numcards;
+    //cout << "numcards :" << numcards << endl;
     for(int i = 0 ; i < numcards ; i++){
       card baseballcard;
       string name;
@@ -50,6 +51,10 @@ int main(int argc, char** argv){
       baseballcard.playerName = name;
       baseballcard.marketPrice = mprice;
       gurtiescards.push_back(baseballcard);
+      //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << endl;
+    }
+    if(gurtiescards.size()==numcards){
+      break;
     }
   }
   marketfile.clear();
@@ -63,31 +68,45 @@ int main(int argc, char** argv){
   int playerprice;
   while(!pricefile.eof() && !pricefile.fail()){
     pricefile >> cardselling;
-    cout << "cardselling : " << cardselling << endl;
+    //cout << "cardselling : " << cardselling << endl;
     pricefile >> budget;
     for(int i = 0 ; i < cardselling ; i++){
       pricefile >> playerpricename;
       pricefile >> playerprice;
-      cout << "player price name: " << playerpricename << endl;
-      cout << "player price : " << playerprice << endl;
+      //cout << "player price name: " << playerpricename << endl;
+      //cout << "player price : " << playerprice << endl;
       for(int j = 0 ; j < gurtiescards.size() ; j++){
-        if(playerpricename.compare(gurtiescards[i].playerName)==0){
-          int price;
-          pricefile >> price;
-          cout << "this is price: " << price << endl;
-          gurtiescards[i].listPrice = price;
+        //cout << "gurties cards of " << j << " is " << gurtiescards[j].playerName << endl;
+        //cout << "player price name : " << playerpricename << endl;
+        if(playerpricename.compare(gurtiescards[j].playerName)==0){
+          //cout << "this is price: " << price << endl;
+          gurtiescards[j].listPrice = playerprice;
         }
       }
+    }
+    for(int i = 0 ; i < gurtiescards.size() ; i++){
+        //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << " list price : " << gurtiescards[i].listPrice<<endl;
     }
   }
   int maxProfit = 0;
   vector<card> currentset;
   vector<card> subset;
   int sumprofit = 0;
-  for(int i = 0 ; i < gurtiescards.size() ; i++){
-    sumprofit+=gurtiescards[i].listPrice;
+  cout << gurtiescards.size() << endl;
+  for(int i = 0 ; i < gurtiescards.size(); i++){
+    if(gurtiescards[i].listPrice!=-1){
+      //cout << " i : " << i << endl;
+      //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << " list price : " << gurtiescards[i].listPrice<<endl;
+      int x = gurtiescards[i].marketPrice;
+      cout << x << endl;
+      int y = gurtiescards[i].listPrice;
+      cout << y << endl;
+      sumprofit+=(x - y);
+      cout << sumprofit << endl;
+    }
   }
   if(sumprofit < budget || sumprofit == budget){
+    cout << "flag" << endl;
     subset = gurtiescards;
     maxProfit = sumprofit - budget;
   }
@@ -95,7 +114,9 @@ int main(int argc, char** argv){
     int iter1 = 0;
     int iter2 = 1;
     while(iter1 < gurtiescards.size()){
-      currentset.push_back(gurtiescards[iter1]);
+      if(gurtiescards[iter1].listPrice!=-1){
+        currentset.push_back(gurtiescards[iter1]);
+      }
       if(currentset[0].listPrice < budget){
         if(currentset[0].marketPrice > maxProfit){
           maxProfit = currentset[0].marketPrice;
@@ -120,7 +141,7 @@ int main(int argc, char** argv){
       }
     }
   for(int i = 0 ; i < subset.size() ; i++){
-    //cout << subset[i].playerName << endl;
-    //cout << maxProfit << endl;
+    cout << subset[i].playerName << endl;
+    cout << maxProfit << endl;
   }
 }
