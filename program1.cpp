@@ -90,7 +90,6 @@ int main(int argc, char** argv){
     }
   }
   int maxProfit = 0;
-  vector<card> currentset;
   vector<card> subset;
   int sumprice = 0;
   cout << gurtiescards.size() << endl;
@@ -122,39 +121,32 @@ int main(int argc, char** argv){
   }
   else{
     cout << "flag" << endl;
-    int iter1 = 0;
-    int iter2 = 1;
-    while(iter1 < gurtiescards.size()){
-      if(gurtiescards[iter1].listPrice!=-1){
-        currentset.push_back(gurtiescards[iter1]);
-        break;
-      }
-      iter1++;
-    }
-      if(currentset[0].listPrice < budget){
-        if(currentset[0].marketPrice > maxProfit){
-          maxProfit = currentset[0].marketPrice;
-          subset = currentset;
+    for(int i = 0 ; i < gurtiescards.size() ; i++){
+      vector<card> currentset;
+      int currprice = gurtiescards[i].listPrice;
+      int currprofit = gurtiescards[i].marketPrice;
+      if(currprice!=-1){
+        if(currprice < budget){
+          currentset.push_back(gurtiescards[i]);
+          maxProfit = currprofit - currprice;
         }
       }
-      while(iter2 < gurtiescards.size()){
-        int currentsum = 0;
-        if(gurtiescards[iter2].listPrice!=-1){
-          currentset.push_back(gurtiescards[iter2]);
-          for(int i = 0 ; i < currentset.size() ; i++){
-            currentsum+=currentset[i].listPrice;
+      for(int j = 0 ; j < pow(2,gurtiescards.size()) ; j++){
+        if(gurtiescards[j].listPrice!=-1){
+          currentset.push_back(gurtiescards[j]);
+        }
+          int setprofit = 0;
+          for(int k = 0 ; k < currentset.size() ; k++){
+            setprofit += currentset[k].marketPrice - currentset[k].listPrice;
           }
-        }
-        if(currentsum < budget){
-          if(currentsum > maxProfit){
-            maxProfit = currentsum;
+          if(setprofit > maxProfit){
             subset = currentset;
+            setprofit = maxProfit;
           }
         }
-        iter2++;
-        }
-      iter1++;
       }
+    }
+  
   for(int i = 0 ; i < subset.size() ; i++){
     cout << subset[i].playerName << endl;
     cout << maxProfit << endl;
