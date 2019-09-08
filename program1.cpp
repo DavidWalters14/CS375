@@ -10,6 +10,7 @@
 #include <cfloat>
 #include <limits>
 #include <queue>
+#include <ctime>
 
 using namespace std;
 
@@ -33,6 +34,7 @@ struct solution{
 };
 
 solution computeMaxProfit(problem p){
+  const clock_t begin_time = clock();
   int maxProfit = 0;
   vector<vector<card>> powerset;
   vector<card> subset1;
@@ -87,6 +89,7 @@ solution computeMaxProfit(problem p){
   cout << "total profit : " << s1.profit2 << endl;
   cout << "num cards in problem : " << s1.numcards2 << endl;
   cout << "num cards bought : " << s1.numcardspurchased << endl;
+  cout << "time : " << float(clock() - begin_time)  << endl;
 };
 
 int main(int argc, char** argv){
