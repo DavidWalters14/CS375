@@ -66,13 +66,17 @@ int main(int argc, char** argv){
   int budget;
   string playerpricename;
   int playerprice;
-  while(!pricefile.eof() && !pricefile.fail()){
+  while(!pricefile.eof()){
     pricefile >> cardselling;
+    cout << "cardselling : " << cardselling << endl;
     //cout << "cardselling : " << cardselling << endl;
     pricefile >> budget;
     for(int i = 0 ; i < cardselling ; i++){
       pricefile >> playerpricename;
+      cout << "player price name : " << playerpricename << endl;
       pricefile >> playerprice;
+      cout << "player price : " << playerprice << endl;
+      cout << "i : " << i << endl;
       //cout << "player price name: " << playerpricename << endl;
       //cout << "player price : " << playerprice << endl;
       for(int j = 0 ; j < gurtiescards.size() ; j++){
@@ -90,9 +94,11 @@ int main(int argc, char** argv){
     }
   }
   int maxProfit = 0;
-  vector<card> subset;
+  vector<vector<card>> powerset;
+  vector<card> subset1;
   int sumprice = 0;
   cout << gurtiescards.size() << endl;
+  vector<card> gc2;
   for(int i = 0 ; i < gurtiescards.size(); i++){
     if(gurtiescards[i].listPrice!=-1){
       //cout << " i : " << i << endl;
@@ -104,51 +110,58 @@ int main(int argc, char** argv){
       sumprice+=y;
       cout << sumprice << endl;
       cout << budget << endl;
+      gc2.push_back(gurtiescards[i]);
     }
+    /*else{
+      gurtiescards[i]=NULL;
+    }*/
   }
   /*if(sumprofit < budget || sumprofit == budget){
     cout << "flag" << endl;
     subset = gurtiescards;
     maxProfit = sumprofit - budget;
   }*/
+  vector<card> final;
   if(sumprice < budget || sumprice == budget){
-    for(int i = 0 ; i < gurtiescards.size(); i++){
-      if(gurtiescards[i].listPrice!=-1){
-        subset.push_back(gurtiescards[i]);
-        maxProfit+=gurtiescards[i].marketPrice - gurtiescards[i].listPrice;
-      }
+    for(int i = 0 ; i < gc2.size(); i++){
+
+        subset1.push_back(gc2[i]);
+        maxProfit+=gc2[i].marketPrice - gc2[i].listPrice;
+
     }
+    powerset.push_back(subset1);
   }
   else{
-    cout << "flag" << endl;
-    for(int i = 0 ; i < gurtiescards.size() ; i++){
-      vector<card> currentset;
-      int currprice = gurtiescards[i].listPrice;
-      int currprofit = gurtiescards[i].marketPrice;
-      if(currprice!=-1){
-        if(currprice < budget){
-          currentset.push_back(gurtiescards[i]);
-          maxProfit = currprofit - currprice;
+    for(int i = 0 ; i < pow(2,gc2.size()) ; i++){
+      vector<card> subset;
+      for(int j = 0 ; j < gc2.size() ; j++){
+        if(i & (1 << j)){
+          subset.push_back(gc2[j]);
         }
       }
-      for(int j = 0 ; j < pow(2,gurtiescards.size()) ; j++){
-        if(gurtiescards[j].listPrice!=-1){
-          currentset.push_back(gurtiescards[j]);
-        }
-          int setprofit = 0;
-          for(int k = 0 ; k < currentset.size() ; k++){
-            setprofit += currentset[k].marketPrice - currentset[k].listPrice;
-          }
-          if(setprofit > maxProfit){
-            subset = currentset;
-            setprofit = maxProfit;
-          }
-        }
-      }
+      powerset.push_back(subset);
     }
-  
-  for(int i = 0 ; i < subset.size() ; i++){
-    cout << subset[i].playerName << endl;
-    cout << maxProfit << endl;
+    int currsum = 0;
+    int currprice = 0;
+    for(int i = 0 ; i < powerset.size() ; i++){
+      vector<card> curr = powerset[i];
+      for(int j = 0 ; j < powerset[i].size() ; j++){
+        currsum += curr[j].marketPrice - curr[j].listPrice;
+        currprice += curr[j].listPrice;
+      }
+      if(currprice < budget || currprice == budget){
+        if(currsum > maxProfit){
+          maxProfit=currsum;
+          final = curr;
+        }
+      }
+      currsum = 0;
+      currprice = 0;
+    }
   }
+
+  for(int i = 0; i < final.size() ; i++){
+    cout << "name : " << final[i].playerName << endl;
+  }
+  cout << "total profit : " << maxProfit << endl;
 }
