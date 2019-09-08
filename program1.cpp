@@ -19,122 +19,45 @@ struct card{
   int listPrice = -1;
 };
 
+struct problem{
+  int number;
+  int bud;
+  vector<card> cards;
+};
 
-int main(int argc, char** argv){
-  int numcards = 0;
-  ifstream marketfile;
-  ifstream pricefile;
-  string m = "-m";
-  string p = "-p";
-  for(int i = 0 ; i < argc ; i++){
-    string arg = argv[i];
-    if(m.compare(arg)==0){
-      marketfile.open(argv[i+1]);
-    }
-    if(p.compare(arg)==0){
-      pricefile.open(argv[i+1]);
-    }
-  }
-  if(!marketfile.is_open()){
-		cout << "market file could not be opened" << endl;
-	}
-  vector<card> gurtiescards;
-  while(!marketfile.eof() && !marketfile.fail()){
-    marketfile >> numcards;
-    //cout << "numcards :" << numcards << endl;
-    for(int i = 0 ; i < numcards ; i++){
-      card baseballcard;
-      string name;
-      int mprice;
-      marketfile >> name;
-      marketfile >> mprice;
-      baseballcard.playerName = name;
-      baseballcard.marketPrice = mprice;
-      gurtiescards.push_back(baseballcard);
-      //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << endl;
-    }
-    if(gurtiescards.size()==numcards){
-      break;
-    }
-  }
-  marketfile.clear();
-  marketfile.close();
-  if(!pricefile.is_open()){
-		cout << "market file could not be opened" << endl;
-  }
-  int cardselling;
-  int budget;
-  string playerpricename;
-  int playerprice;
-  while(pricefile >> cardselling >> budget){
-    for(int i = 0 ; i < cardselling ; i++){
-      pricefile >> playerpricename;
-      cout << "player price name : " << playerpricename << endl;
-      pricefile >> playerprice;
-      cout << "player price : " << playerprice << endl;
-      cout << "i : " << i << endl;
-      //cout << "player price name: " << playerpricename << endl;
-      //cout << "player price : " << playerprice << endl;
-      for(int j = 0 ; j < gurtiescards.size() ; j++){
-        //cout << "gurties cards of " << j << " is " << gurtiescards[j].playerName << endl;
-        //cout << "player price name : " << playerpricename << endl;
-        if(playerpricename.compare(gurtiescards[j].playerName)==0){
-          //cout << "this is price: " << price << endl;
-          gurtiescards[j].listPrice = playerprice;
-        }
-      }
-      bool flag = pricefile.eof();
-      cout << flag << endl;
-    }
-    pricefile.close();
-    for(int i = 0 ; i < gurtiescards.size() ; i++){
-        //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << " list price : " << gurtiescards[i].listPrice<<endl;
-    }
-  }
+struct solution{
+  int numcards2;
+  int profit2;
+  int numcardspurchased;
+  int time;
+};
+
+solution computeMaxProfit(problem p){
   int maxProfit = 0;
   vector<vector<card>> powerset;
   vector<card> subset1;
   int sumprice = 0;
-  cout << gurtiescards.size() << endl;
-  vector<card> gc2;
-  for(int i = 0 ; i < gurtiescards.size(); i++){
-    if(gurtiescards[i].listPrice!=-1){
-      //cout << " i : " << i << endl;
-      //cout << "name :  " << gurtiescards[i].playerName << " market price: "<< gurtiescards[i].marketPrice << " list price : " << gurtiescards[i].listPrice<<endl;
-      int x = gurtiescards[i].marketPrice;
-      cout << x << endl;
-      int y = gurtiescards[i].listPrice;
-      cout << y << endl;
-      sumprice+=y;
-      cout << sumprice << endl;
-      cout << budget << endl;
-      gc2.push_back(gurtiescards[i]);
-    }
-    /*else{
-      gurtiescards[i]=NULL;
-    }*/
+  int budget = p.bud;
+  for(int i = 0 ; i < p.cards.size(); i++){
+    sumprice+=p.cards[i].listPrice;
   }
-  /*if(sumprofit < budget || sumprofit == budget){
-    cout << "flag" << endl;
-    subset = gurtiescards;
-    maxProfit = sumprofit - budget;
-  }*/
   vector<card> final;
   if(sumprice < budget || sumprice == budget){
-    for(int i = 0 ; i < gc2.size(); i++){
+    for(int i = 0 ; i < p.cards.size(); i++){
 
-        subset1.push_back(gc2[i]);
-        maxProfit+=gc2[i].marketPrice - gc2[i].listPrice;
+        subset1.push_back(p.cards[i]);
+        maxProfit+=p.cards[i].marketPrice - p.cards[i].listPrice;
 
     }
     powerset.push_back(subset1);
+    final = subset1;
   }
   else{
-    for(int i = 0 ; i < pow(2,gc2.size()) ; i++){
+    for(int i = 0 ; i < pow(2,p.cards.size()) ; i++){
       vector<card> subset;
-      for(int j = 0 ; j < gc2.size() ; j++){
+      for(int j = 0 ; j < p.cards.size() ; j++){
         if(i & (1 << j)){
-          subset.push_back(gc2[j]);
+          subset.push_back(p.cards[j]);
         }
       }
       powerset.push_back(subset);
@@ -157,9 +80,83 @@ int main(int argc, char** argv){
       currprice = 0;
     }
   }
+  solution s1;
+  s1.numcardspurchased = final.size();
+  s1.profit2 = maxProfit;
+  s1.numcards2 = p.cards.size();
+  cout << "total profit : " << s1.profit2 << endl;
+  cout << "num cards in problem : " << s1.numcards2 << endl;
+  cout << "num cards bought : " << s1.numcardspurchased << endl;
+};
 
-  for(int i = 0; i < final.size() ; i++){
-    cout << "name : " << final[i].playerName << endl;
+int main(int argc, char** argv){
+  int numcards = 0;
+  ifstream marketfile;
+  ifstream pricefile;
+  string m = "-m";
+  string p = "-p";
+  vector<card> gurtiescards;
+  for(int i = 0 ; i < argc ; i++){
+    string arg = argv[i];
+    if(m.compare(arg)==0){
+      marketfile.open(argv[i+1]);
+    }
+    if(p.compare(arg)==0){
+      pricefile.open(argv[i+1]);
+    }
   }
-  cout << "total profit : " << maxProfit << endl;
+  if(!marketfile.is_open()){
+		cout << "market file could not be opened" << endl;
+	}
+  vector<problem> problems;
+  while(marketfile >> numcards){
+    for(int i = 0 ; i < numcards ; i++){
+      card baseballcard;
+      string name;
+      int mprice;
+      marketfile >> name;
+      marketfile >> mprice;
+      baseballcard.playerName = name;
+      baseballcard.marketPrice = mprice;
+      gurtiescards.push_back(baseballcard);
+    }
+  }
+  marketfile.clear();
+  marketfile.close();
+  if(!pricefile.is_open()){
+		cout << "market file could not be opened" << endl;
+  }
+  int cardselling;
+  int budget;
+  string playerpricename;
+  int playerprice;
+  while(pricefile >> cardselling >> budget){
+    problem p;
+    p.number = cardselling;
+    //cout << "cardselling : " << cardselling << endl;
+    p.bud = budget;
+    //cout << "budget : " << budget << endl;
+    for(int i = 0 ; i < cardselling ; i++){
+      pricefile >> playerpricename;
+      //cout << "player price name : " << playerpricename << endl;
+      pricefile >> playerprice;
+      //cout << "player price : " << playerprice << endl;
+      //cout << "i : " << i << endl;
+      for(int j = 0 ; j < gurtiescards.size() ; j++){
+        if(playerpricename.compare(gurtiescards[j].playerName)==0){
+          gurtiescards[j].listPrice = playerprice;
+          p.cards.push_back(gurtiescards[j]);
+        }
+      }
+    }
+    problems.push_back(p);
+  }
+  pricefile.close();
+  vector<solution> solutions;
+  for(int i = 0 ; i < problems.size() ; i++){
+      //cout << "problem # : " << i << " player # : " << j << " player name: " << problems[i].cards[j].playerName << endl;
+      solution s = computeMaxProfit(problems[i]);
+
+
+  }
 }
