@@ -66,11 +66,7 @@ int main(int argc, char** argv){
   int budget;
   string playerpricename;
   int playerprice;
-  while(!pricefile.eof()){
-    pricefile >> cardselling;
-    cout << "cardselling : " << cardselling << endl;
-    //cout << "cardselling : " << cardselling << endl;
-    pricefile >> budget;
+  while(pricefile >> cardselling >> budget){
     for(int i = 0 ; i < cardselling ; i++){
       pricefile >> playerpricename;
       cout << "player price name : " << playerpricename << endl;
@@ -87,6 +83,8 @@ int main(int argc, char** argv){
           gurtiescards[j].listPrice = playerprice;
         }
       }
+      bool flag = pricefile.eof();
+      cout << flag << endl;
     }
     pricefile.close();
     for(int i = 0 ; i < gurtiescards.size() ; i++){
