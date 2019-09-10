@@ -11,6 +11,7 @@
 #include <limits>
 #include <queue>
 #include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -30,11 +31,14 @@ struct solution{
   int numcards2;
   int profit2;
   int numcardspurchased;
-  int time;
+  double time;
 };
 
 solution computeMaxProfit(problem p){
+  std::chrono::time_point<std::chrono::system_clock> s, e; 
+  s = std::chrono::system_clock::now();
   const clock_t begin_time = clock();
+ 
   int maxProfit = 0;
   vector<vector<card>> powerset;
   vector<card> subset1;
@@ -86,10 +90,12 @@ solution computeMaxProfit(problem p){
   s1.numcardspurchased = final.size();
   s1.profit2 = maxProfit;
   s1.numcards2 = p.cards.size();
-  cout << "total profit : " << s1.profit2 << endl;
-  cout << "num cards in problem : " << s1.numcards2 << endl;
-  cout << "num cards bought : " << s1.numcardspurchased << endl;
-  cout << "time : " << float(clock() - begin_time)  << endl;
+  e = std::chrono::system_clock::now(); 
+  std::chrono::duration<double> els = e - s;
+  s1.time = els.count(); 
+
+
+  return s1;
 };
 
 int main(int argc, char** argv){
@@ -156,10 +162,12 @@ int main(int argc, char** argv){
   }
   pricefile.close();
   vector<solution> solutions;
+  ofstream output;
+  output.open("output.txt");
   for(int i = 0 ; i < problems.size() ; i++){
-      //cout << "problem # : " << i << " player # : " << j << " player name: " << problems[i].cards[j].playerName << endl;
       solution s = computeMaxProfit(problems[i]);
-
+      output << "number of input cards : " << s.numcards2 << " , max profit : " << s.profit2 << " , number of cards bought : " << s.numcardspurchased << " , time taken : " << s.time << endl;
 
   }
+  output.close();
 }

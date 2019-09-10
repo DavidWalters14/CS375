@@ -1,6 +1,7 @@
 2 200
 JimRice1975 100
 RickyHenderson1983 150
-2 250
+3 500
 JimRice1975 100
 RickyHenderson1983 150
+TimHorton1992 400

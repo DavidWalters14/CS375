@@ -1,0 +1,2 @@
+number of input cards : 2 , max profit : 2900 , number of cards bought : 1 , time taken : 1.5082e-05
+number of input cards : 3 , max profit : 10500 , number of cards bought : 2 , time taken : 1.9537e-05
