@@ -35,10 +35,10 @@ struct solution{
 };
 
 solution computeMaxProfit(problem p){
-  std::chrono::time_point<std::chrono::system_clock> s, e; 
+  std::chrono::time_point<std::chrono::system_clock> s, e;
   s = std::chrono::system_clock::now();
   const clock_t begin_time = clock();
- 
+
   int maxProfit = 0;
   vector<vector<card>> powerset;
   vector<card> subset1;
@@ -90,9 +90,9 @@ solution computeMaxProfit(problem p){
   s1.numcardspurchased = final.size();
   s1.profit2 = maxProfit;
   s1.numcards2 = p.cards.size();
-  e = std::chrono::system_clock::now(); 
+  e = std::chrono::system_clock::now();
   std::chrono::duration<double> els = e - s;
-  s1.time = els.count(); 
+  s1.time = els.count();
 
 
   return s1;
@@ -166,7 +166,7 @@ int main(int argc, char** argv){
   output.open("output.txt");
   for(int i = 0 ; i < problems.size() ; i++){
       solution s = computeMaxProfit(problems[i]);
-      output << "number of input cards : " << s.numcards2 << " , max profit : " << s.profit2 << " , number of cards bought : " << s.numcardspurchased << " , time taken : " << s.time << endl;
+      output << s.numcards2 << "  " << s.profit2 << "  " << s.numcardspurchased << "  " << s.time << endl;
 
   }
   output.close();
